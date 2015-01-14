@@ -1,0 +1,1 @@
+rake -f /home/ricardo/github_ricardo/redmine/Rakefile --silent redmine:email:receive_imap RAILS_ENV="development" host=imap.gmail.com port=993 username=ricardo.baumann@zenvia.com password="01081951" ssl=true project=sms folder=INBOX move_on_success=processed move_on_failure=failed no_permission_check=1 unknown_user=accept

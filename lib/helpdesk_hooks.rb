@@ -21,20 +21,24 @@ class HelpdeskHooks < Redmine::Hook::Listener
   
   # fetch 'send_to_owner' param and set the value into journal.send_to_owner
   def controller_issues_edit_before_save(context={})
+    #puts "\n\n\n\n\n\n aki?"
     send_to_owner = (context[:params]['send_to_owner'] == "true")
-    context[:journal].send_to_owner = send_to_owner
+    #puts "\n\n\n\n #{send_to_owner} #{context[:journal].inspect}"
+    context[:journal][:send_to_owner] = send_to_owner
   end
   
   # add a history note on the journal
   def view_issues_history_journal_bottom(context={})
-    return if (context[:journal].nil? || context[:journal].notes.nil? || context[:journal].notes.length == 0)
-    return unless context[:journal].send_to_owner == true
+
+    return if (context[:journal].nil? || context[:journal].notes.nil? || context[:journal].notes.length == 0) 
+    return unless context[:journal][:send_to_owner] == true
     i = Issue.find(context[:journal].journalized_id)
     c = CustomField.find_by_name('owner-email')
     owner_email = i.custom_value_for(c).try(:value)
     return if owner_email.blank?
     action_view = ActionView::Base.new(File.dirname(__FILE__) + '/../app/views/')
     action_view.render(:partial => "issue_history", :locals => {:email => owner_email})
+    
   end
   
 end
